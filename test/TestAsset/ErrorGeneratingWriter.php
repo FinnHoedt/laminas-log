@@ -6,14 +6,14 @@ namespace LaminasTest\Log\TestAsset;
 
 use Laminas\Log\Writer\AbstractWriter;
 
-use function trigger_error;
-
-use const E_USER_WARNING;
+use function fopen;
+use function uniqid;
 
 class ErrorGeneratingWriter extends AbstractWriter
 {
     protected function doWrite(array $event)
     {
-        trigger_error('test', E_USER_WARNING);
+        // Trigger E_WARNING by opening a non-existent file
+        fopen('/nonexistent/path/that/does/not/exist/' . uniqid(), 'r');
     }
 }

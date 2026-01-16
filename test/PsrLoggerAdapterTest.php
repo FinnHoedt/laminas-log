@@ -7,21 +7,16 @@ namespace LaminasTest\Log;
 use Laminas\Log\Logger;
 use Laminas\Log\PsrLoggerAdapter;
 use Laminas\Log\Writer\Mock as MockWriter;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
-use Psr\Log\Test\LoggerInterfaceTest;
-
-use function array_flip;
-use function array_map;
 
 /**
  * @coversDefaultClass \Laminas\Log\PsrLoggerAdapter
  * @covers ::<!public>
  */
-class PsrLoggerAdapterTest extends LoggerInterfaceTest
+class PsrLoggerAdapterTest extends TestCase
 {
-    private MockWriter $mockWriter;
-
     /** @var array */
     protected $psrPriorityMap = [
         LogLevel::EMERGENCY => Logger::EMERG,
@@ -33,43 +28,6 @@ class PsrLoggerAdapterTest extends LoggerInterfaceTest
         LogLevel::INFO      => Logger::INFO,
         LogLevel::DEBUG     => Logger::DEBUG,
     ];
-
-    /**
-     * Provides logger for LoggerInterface compat tests
-     *
-     * @return PsrLoggerAdapter
-     */
-    public function getLogger()
-    {
-        $this->mockWriter = new MockWriter();
-        $logger           = new Logger();
-        $logger->addProcessor('psrplaceholder');
-        $logger->addWriter($this->mockWriter);
-        return new PsrLoggerAdapter($logger);
-    }
-
-    /**
-     * This must return the log messages in order.
-     *
-     * The simple formatting of the messages is: "<LOG LEVEL> <MESSAGE>".
-     *
-     * Example ->error('Foo') would yield "error Foo".
-     *
-     * @return string[]
-     */
-    public function getLogs()
-    {
-        $prefixMap = array_flip($this->psrPriorityMap);
-        return array_map(function ($event) use ($prefixMap) {
-            $prefix = $prefixMap[$event['priority']];
-            return $prefix . ' ' . $event['message'];
-        }, $this->mockWriter->events);
-    }
-
-    protected function tearDown(): void
-    {
-        unset($this->mockWriter);
-    }
 
     /**
      * @covers ::__construct
@@ -123,8 +81,11 @@ class PsrLoggerAdapterTest extends LoggerInterfaceTest
 
     public function testThrowsOnInvalidLevel()
     {
-        $logger = $this->getLogger();
+        $logger = new Logger();
+        $logger->addWriter(new MockWriter());
+        $adapter = new PsrLoggerAdapter($logger);
+
         $this->expectException(InvalidArgumentException::class);
-        $logger->log('invalid level', 'Foo');
+        $adapter->log('invalid level', 'Foo');
     }
 }

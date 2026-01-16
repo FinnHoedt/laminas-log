@@ -77,10 +77,28 @@ class AbstractTest extends TestCase
         $writer = new ErrorGeneratingWriter();
         $this->expectException(RuntimeException::class);
         $writer->write(['message' => 'test']);
+    }
 
+    public function testWriteErrorsAsWarningsWhenConversionDisabled(): void
+    {
+        $writer = new ErrorGeneratingWriter();
         $writer->setConvertWriteErrorsToExceptions(false);
-        $this->expectWarning();
-        $writer->write(['message' => 'test']);
+
+        $warningTriggered = false;
+        set_error_handler(function (int $errno) use (&$warningTriggered): bool {
+            if ($errno === E_WARNING) {
+                $warningTriggered = true;
+            }
+            return true;
+        });
+
+        try {
+            $writer->write(['message' => 'test']);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertTrue($warningTriggered, 'Expected a warning to be triggered');
     }
 
     public function testConstructorWithOptions(): void
