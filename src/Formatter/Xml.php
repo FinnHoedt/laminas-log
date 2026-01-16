@@ -55,12 +55,14 @@ class Xml implements FormatterInterface
      */
     public function __construct($options = [])
     {
+        $originalArgs = func_get_args();
+
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
         }
 
         if (! is_array($options)) {
-            $args = func_get_args();
+            $args = $originalArgs;
 
             $options = [
                 'rootElement' => array_shift($args),
