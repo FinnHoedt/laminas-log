@@ -100,6 +100,8 @@ class Logger implements LoggerInterface
      */
     protected static $registeredErrorHandler = false;
 
+    // command
+
     /**
      * Registered shutdown error handler
      *
