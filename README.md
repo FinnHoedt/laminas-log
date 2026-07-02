@@ -1,4 +1,4 @@
-# laminas-log
+# laminas-log is now here
 
 > [!CAUTION]
 > This package is **abandoned** and will receive no further development.
