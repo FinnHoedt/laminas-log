@@ -1,5 +1,7 @@
 # Filters
 
+## idk what 
+
 A *filter* prevents a message from being written to the log.
 
 You can add a filter to a specific writer using the `addFilter()` method of the
