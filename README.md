@@ -2,6 +2,8 @@
 
 ## laminas-log is now there
 
+## Now there is another heading
+
 ## Yet another change
 
 ## This is also a change
